@@ -83,6 +83,24 @@ func (imu *IMU) Calibrate() error {
 	return nil
 }
 
+func (imu *IMU) PrintIMUOffsets() {
+	ax, _ := imu.mpu.GetXAccelOffset()
+	ay, _ := imu.mpu.GetYAccelOffset()
+	az, _ := imu.mpu.GetZAccelOffset()
+	gx, _ := imu.mpu.GetXGyroOffset()
+	gy, _ := imu.mpu.GetYGyroOffset()
+	gz, _ := imu.mpu.GetZGyroOffset()
+
+	println("Accel X: ", ax,
+		"\tAccel Y: ", ay,
+		"\tAccel Z: ", az,
+		"\tGyro X: ", gx,
+		"\tGyro Y: ", gy,
+		"\tGyro Z: ", gz,
+	)
+
+}
+
 func (imu *IMU) loadCalibration() error {
 
 	return nil

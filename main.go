@@ -40,15 +40,7 @@ func main() {
 		}
 	}
 
-	if false {
-		// FORCE A CALIBATION
-		imu.Calibrate()
-		println("MPU calibrated!!")
-		//for {
-		//	imu.Test_MPU6050()
-		//	time.Sleep(time.Millisecond * 500)
-		//}
-	} else {
+	if true {
 		err = imu.Init()
 		if err != nil {
 			println("Unable to initialize IMU. Aborting.")
@@ -58,6 +50,7 @@ func main() {
 		}
 		imu.Calibrate()
 		println("MPU calibrated!!")
+		imu.PrintIMUOffsets()
 		for {
 			angles, err := imu.GetYawPitchRoll()
 			if err == nil {
