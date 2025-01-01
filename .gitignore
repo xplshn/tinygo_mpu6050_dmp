@@ -1,2 +1,8 @@
 .DS_Store
 temp/
+python-animation/bin
+python-animation/etc
+python-animation/include
+python-animation/lib
+python-animation/share
+

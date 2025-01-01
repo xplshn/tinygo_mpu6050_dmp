@@ -1,3 +1,11 @@
+// Read and write to registers/address based on Jeff's utility functions
+// These are very similar except for the fact that the length(size) of
+// is implied by the length of the []byte. This works very well with
+// the I2C read and write design in Tinygo device modules
+
+// Note: not all of Jeff Rowberg's utilities are implemented - Only those
+// required for the DMP configuration
+
 package mpu6050
 
 import (
@@ -105,6 +113,7 @@ func (d *Device) WriteWords(regAddr uint8, data []int16) error {
 	return d.WriteBytes(regAddr, b)
 }
 
+// Alla Jeff Rowberg style - better than mine!
 func (d Device) writeMemoryBlock(data []byte, dataSize int, bank uint8, address uint8, verify bool) error {
 	// safety check - force user to specify length of data[]
 	if int(dataSize) != len(data) {
@@ -154,7 +163,7 @@ func (d Device) writeMemoryBlock(data []byte, dataSize int, bank uint8, address 
 			}
 		}
 		i += chunkSize
-		address += uint8(chunkSize) // address will wrap automatically at 256
+		address += uint8(chunkSize) // address will wrap automatically at 256 - swith to a new bank and restart a 0 offset
 		if i < dataSize {
 			if address == 0 {
 				bank++
@@ -162,10 +171,7 @@ func (d Device) writeMemoryBlock(data []byte, dataSize int, bank uint8, address 
 			d.setMemoryBank(bank, false, false)
 			d.setMemoryStartAddress(address)
 		}
-		print(".")
-
 	}
-	println()
 	return nil
 }
 

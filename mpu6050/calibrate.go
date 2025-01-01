@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-/*
+/* Arduino version
 func mapValue(x, in_min, in_max, out_min, out_max int64) int64 {
 	val := (x-in_min)*(out_max-out_min)/(in_max-in_min) + out_min
 	println("mapValue: ", val)

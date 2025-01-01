@@ -4,7 +4,6 @@ import (
 	"errors"
 	"main/mpu6050"
 
-	//m "xSetech/go-math32"
 	m "math"
 
 	"tinygo.org/x/drivers"
@@ -72,7 +71,7 @@ func (imu *IMU) load_offsets_from_storage_and_start_dmp() error {
 	return nil
 }
 func (imu *IMU) IsCalibrated() bool {
-	//imu.Calibrate()
+	// TODO: read calibration flag from storage
 	return true
 }
 
@@ -80,6 +79,9 @@ func (imu *IMU) Calibrate() error {
 	println("Calibration invoked ...")
 	imu.mpu.CalibrateAccel(6)
 	imu.mpu.CalibrateGyro(6)
+
+	// TODO: store calibation to EEPROM or FLASH for
+	// retieval on restarts.
 	return nil
 }
 
@@ -101,8 +103,10 @@ func (imu *IMU) PrintIMUOffsets() {
 
 }
 
+// use loadCalibration to get the calibration from
+// EEPROM or FLASH storage - see Maker's Wharf for inspirational work.
 func (imu *IMU) loadCalibration() error {
-
+	// TODO: get calibration from storage
 	return nil
 }
 
@@ -126,6 +130,8 @@ func (imu *IMU) GetYawPitchRoll() (mpu6050.Angels, error) {
 	q2 := float64(q.Y)
 	q3 := float64(q.Z)
 
+	// this conversion is based on Maker's Wharf corrected conversion
+	// that does not have a gymble lock  - check the video
 	yr := -m.Atan2(-2.0*q1*q2+2.0*q0*q3, q2*q2-q3*q3-q1*q1+q0*q0)
 	pr := m.Asin(2.0*q2*q3 + 2.0*q0*q1)
 	rr := m.Atan2(-2.0*q1*q3+2.0*q0*q2, q3*q3-q2*q2-q1*q1+q0*q0)
@@ -150,6 +156,7 @@ func (imu *IMU) GuessOffsets() {
 	imu.mpu.SetZAccelOffset(620)
 }
 
+// Use basic (NOT DMP mode) MPU functions to see it works
 func (imu *IMU) Test_MPU6050() {
 	imu.mpu.Initialize()
 	x, y, z := imu.mpu.ReadRotation()

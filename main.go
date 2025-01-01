@@ -32,6 +32,7 @@ func main() {
 		}
 	}
 
+	// Create and Initialise MPU6050 for DMP mode
 	imu, err := imu.New(I2C_MPU6050)
 	if err != nil {
 		println("Unable to create a MPU6050 instance. Aborting.")
@@ -59,7 +60,7 @@ func main() {
 					strconv.FormatFloat(float64(angles.Pitch), 'f', 2, 32), "\t",
 					strconv.FormatFloat(float64(angles.Roll), 'f', 2, 32))
 			}
-			time.Sleep(time.Millisecond)
+			time.Sleep(time.Millisecond * 100) // sleep for 100 milliseconds - allow Animation.py to keep up
 		}
 	}
 }

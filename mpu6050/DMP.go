@@ -1,14 +1,17 @@
 // This module owes its design to Jeff Rowberg
 // https://github.com/ElectronicCats/mpu6050
 
-// The DMP module and functions was exported from the C/C++
+// It is a stripped down  and minimilistic version for DMP purposes
+// as used by Maker's Wharf
+
+// The DMP module and functions was exported and translated from the C/C++
 // implementation by Jeff Rowberg ( Electronic Cats) and
-// converted for Tinygo.
+// converted for Tinygo use as an extened mpu6050 device (see Tinygo devices).
 
 // The work was inspired by this video from Maker's Wharf
 // https://www.youtube.com/watch?v=k5i-vE5rZR0
 
-// Tested with the Arduino-Zero tinygo machine (SAMD21)
+// Tested with the Arduino-Zero Tinygo machine (SAMD21)
 
 package mpu6050
 
@@ -16,6 +19,10 @@ import (
 	"errors"
 	"strconv"
 	"time"
+)
+
+var (
+	print_debug_message = false
 )
 
 /** Power on and prepare for general usage.
@@ -179,6 +186,9 @@ func (d Device) TestConnection() error {
 }
 
 func debug_print(str string) {
+	if !print_debug_message {
+		return
+	}
 	println(str)
 }
 
@@ -440,88 +450,31 @@ func (d Device) SetDMPenabled(s bool) error {
 	return nil
 }
 
-/* -- translated from the Arduino package - does not make any sence at all!!!
-func (d Device) getGurrentFIFOPacket(buf []byte, length int16) int {
-	var fifoC int16
-	breakTimer := time.Now()
-	packetReceived := false
-
-	wait1 := func() bool {
-		t := time.Now().Sub(breakTimer)
-		return t.Microseconds() <= d.getFIFOTimeout()
-	}
-
-	wait2 := func() bool {
-		t := time.Now().Sub(breakTimer)
-		return t.Microseconds() > d.getFIFOTimeout()
-	}
-
-	iGetFIFOCount := func() int16 {
-		fifoC = int16(d.getFIFOCount())
-		return fifoC
-	}
-
-	for !packetReceived {
-		fifoC = int16(d.getFIFOCount())
-		println("1.fifoC: ", fifoC)
-		if fifoC > int16(length) {
-			if fifoC > 200 {
-				d.resetFIFO()
-				fifoC = 0
-				for {
-					fifoC = int16(d.getFIFOCount())
-					println("2.fifoC: ", fifoC)
-					if fifoC == 0 && wait1() {
-						break
-					}
-				}
-			} else {
-				trash := make([]byte, WIRE_BUFFER_LENGTH)
-				for iGetFIFOCount() > length {
-					println("3.fifoC: ", fifoC)
-					fifoC = fifoC - length
-					var removeBytes int16
-					for fifoC > 0 {
-						if fifoC < WIRE_BUFFER_LENGTH {
-							removeBytes = fifoC
-						} else {
-							removeBytes = WIRE_BUFFER_LENGTH
-						}
-						d.getFIFOBytes(trash, uint8(removeBytes))
-						fifoC -= removeBytes
-					}
-				}
-			}
-		}
-		if fifoC == 0 {
-			return 0
-		}
-		packetReceived = fifoC == length
-		if !packetReceived && wait2() {
-			return 0
-		}
-	}
-	d.getFIFOBytes(buf, uint8(length))
-	return 1
-}
-*/
-
+// the DMP is dumping Quaternions as fast as it can.
+// Maybe faster than we would like. So try and get a relative
+// fresh complete packet from the FIFO buffer.
 func (d Device) getGurrentFIFOPacket(buf []byte, length int16) {
 	var fifoC int16
 	packetReceived := false
 
 	iGetFIFOCount := func() int16 {
 		fifoC = int16(d.getFIFOCount())
-		//	println("FIFO: ", fifoC)
 		return fifoC
 	}
 
 	for !packetReceived {
-		if iGetFIFOCount() > int16(length) {
-			if fifoC > 200 {
+		if iGetFIFOCount() > length {
+			if fifoC > 5*length {
 				d.resetFIFO()
-				println("Reset FIFO .........")
-			} else {
+				time.Sleep(time.Millisecond)
+				// try to strip fragmented head
+				if iGetFIFOCount()%length != 0 {
+					trash := make([]byte, fifoC%length)
+					d.ReadBytes(FIFO_R_W, trash)
+				}
+				continue
+			}
+			if fifoC%length == 0 {
 				err := d.getFIFOBytes(buf, uint8(length))
 				if err == nil {
 					packetReceived = true
@@ -591,6 +544,9 @@ func (d Device) DMPgetQuaternion(buf []byte) (Quaternion, error) {
 	q.X = float32(data[1]) / 16384.0
 	q.Y = float32(data[2]) / 16384.0
 	q.Z = float32(data[3]) / 16384.0
+
+	// Not sure why this does not work - I guess we have to convert from uint to
+	// int before we cast to float32 as in the case above
 	//q.W = float32(binary.BigEndian.Uint32(buf[0:])) / 16384.0
 	//q.X = float32(binary.BigEndian.Uint32(buf[4:])) / 16384.0
 	//q.Y = float32(binary.BigEndian.Uint32(buf[8:])) / 16384.0
