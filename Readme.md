@@ -1,16 +1,21 @@
 # MPU6050 Digital Motion Processor (DMP) device driver for Tinygo
 
-Inspired by Maker's Wharf which is a C/C++ implemntation of Jeff Rowberg's MPU6050
-Arduino library. See it here: [https://www.youtube.com/watch?v=k5i-vE5rZR0](https://www.youtube.com/watch?v=k5i-vE5rZR0)  
+A mpu6050 gyro that just works. Thanks to these smart people for smoothing out the
+wrinkles. 
 
-Jeff Rowberg's Arduino library : [https://github.com/ElectronicCats/mpu6050](https://github.com/ElectronicCats/mpu6050)  
+Inspired by Maker's Wharf which is a C/C++ implemntation of Jeff Rowberg's MPU6050
+Arduino library. See it here: 
+[https://www.youtube.com/watch?v=k5i-vE5rZR0](https://www.youtube.com/watch?v=k5i-vE5rZR0)  
+
+Jeff Rowberg's Arduino library : 
+[https://github.com/ElectronicCats/mpu6050](https://github.com/ElectronicCats/mpu6050)  
 
 
 ## Implemtation
 
 Tested with the arduino-zero(SAMD21) Tinygo machine.   
 
-To run  clone the repository, `go mod install` or `go get tinygo.org/x/drivers`   
+To run:  clone the repository, `go mod install` or `go get tinygo.org/x/drivers`   
 
 Then `tinygo flash --target=arduino-zero -monitor main.go`.  
 
@@ -23,15 +28,16 @@ Note: The demo does not use interrupts
 
 ## Useage
 
-When the Arduino/MPU6050 starts up it will run the calibration for all 6-axis'. It should be placed on a flat horizontal
-surface and kept STILL. Once calibration has completed, the roll, pitch and yaw will be 
-dumped at approx 100 millisecond intervals.   
+When the Arduino/MPU6050 starts up it will run the calibration for all 6-axis'.
+It should be placed on a flat horizontal surface and kept STILL. Once calibration 
+has completed, the yaw, pitch and roll will be dumped at approx 100 millisecond intervals.   
 
 The output can be used together with VPython for simple animation.  
 
 ### VPython animation
 
-The repo has simple bash scripts to get VPython up and running. A python virtual environment is the easiest to get going.  
+The repo has simple bash scripts to get VPython up and running. 
+A python virtual environment is the easiest to get going.  
 Use the scripts as a guide:  
   - create the Vitual env.  
   - activate the venv `source ./bin/activate`  

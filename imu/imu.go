@@ -131,7 +131,7 @@ func (imu *IMU) GetYawPitchRoll() (mpu6050.Angels, error) {
 	q3 := float64(q.Z)
 
 	// this conversion is based on Maker's Wharf corrected conversion
-	// that does not have a gymble lock  - check the video
+	// that does not have a gimbal lock  - check the video
 	yr := -m.Atan2(-2.0*q1*q2+2.0*q0*q3, q2*q2-q3*q3-q1*q1+q0*q0)
 	pr := m.Asin(2.0*q2*q3 + 2.0*q0*q1)
 	rr := m.Atan2(-2.0*q1*q3+2.0*q0*q2, q3*q3-q2*q2-q1*q1+q0*q0)
@@ -156,7 +156,7 @@ func (imu *IMU) GuessOffsets() {
 	imu.mpu.SetZAccelOffset(620)
 }
 
-// Use basic (NOT DMP mode) MPU functions to see it works
+// Use basic (NOT DMP mode) MPU functions to see if the I2C comms works
 func (imu *IMU) Test_MPU6050() {
 	imu.mpu.Initialize()
 	x, y, z := imu.mpu.ReadRotation()

@@ -46,7 +46,7 @@ def createRotatingObjects():
     # MPU6050 module
     # Original orientation as per video
     mpu =  box(length = 4, height = 2, width = .2, opacity = 0.3, pos =  vector(0, 0, 0), color = color.blue )
-    # orientation as per my boeard
+    # orientation as per my board
     # mpu =  box(length = 2, height = .02, width = 4, opacity = 0.3, pos =  vector(0, 0, 0), color = color.blue )
 
     # markings on MPU6050 module
@@ -97,12 +97,6 @@ while (True):
         # display values while they are still in degrees
         angles.text = f'yaw: {round(yaw)}\npitch: {round(pitch)}\n roll: {round(roll)}'
         
-        # align MPU6050 with orientation of box
-        yaw = yaw  + 0.0 # compensate for beter orientation
-        pitch = pitch + 0.0
-        roll = roll + 0.0
-
-
         yaw = math.radians(yaw)
         pitch = math.radians(pitch)
         roll = math.radians(roll)
@@ -119,7 +113,7 @@ while (True):
         # note x is invariant  under pitch rotaion. Apply the pitch rotation to y;
         y = rodriquesRotation(y, x, pitch)
 
-        # y is invariant to the roll ratation. Apply the roll rotation to x:
+        # y is invariant to the roll rotation. Apply the roll rotation to x:
         x = rodriquesRotation(x, y, roll)
 
         rotatingObjects.axis = y
