@@ -11,7 +11,7 @@ Jeff Rowberg's Arduino library :
 [https://github.com/ElectronicCats/mpu6050](https://github.com/ElectronicCats/mpu6050)  
 
 
-## Implemtation
+## Implementation
 
 Tested with the arduino-zero(SAMD21) Tinygo machine.   
 
@@ -26,7 +26,7 @@ Use the tinygo usb driver - it is really just a matter of identifying and then c
 
 Note: The demo does not use interrupts  
 
-## Useage
+## Usage
 
 When the Arduino/MPU6050 starts up it will run the calibration for all 6-axis'.
 It should be placed on a flat horizontal surface and kept STILL. Once calibration 
