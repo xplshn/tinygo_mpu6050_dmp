@@ -1,4 +1,4 @@
-module github.com/xplshn/tinygo_mpu6050_dmp
+module github.com/brucebotes/tinygo_mpu6050_dmp
 
 go 1.23.4
 
